@@ -1,17 +1,17 @@
 import { useMemo, useState } from "react";
 import { useLocation, Link } from "react-router";
-import { LogOut, Settings, LayoutDashboard, Menu, X } from "lucide-react";
+import { LogOut, Settings, LayoutDashboard, X } from "lucide-react";
 import { jwtDecode } from "jwt-decode";
 import { useAuth } from "../../hooks/useAuth.hook";
 import { useLogout } from "../../hooks/useLogout.hook";
+import PlayerSearchCombobox from "../../modules/player-search/components/PlayerSearchCombobox";
 
 const navItems = [
-  { label: "Players", to: "/players" },
+  { label: "Search" },
   { label: "Stats", to: "/" },
   { label: "Compare", to: "/" },
   { label: "Leaderboards", to: "/players" },
 ];
-const accent = "#22f5ff";
 
 interface AccessTokenPayload {
   sub?: string;
@@ -21,7 +21,8 @@ const Header = () => {
   const location = useLocation();
   const { accessToken } = useAuth();
   const { logout } = useLogout();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [hoveredNavItem, setHoveredNavItem] = useState<string | null>(null);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const isDashboardPage =
     location.pathname.startsWith("/dashboard") ||
@@ -42,33 +43,33 @@ const Header = () => {
   // On dashboard — render nothing, the sidebar/viewer handle the chrome
   if (isDashboardPage && accessToken) return null;
 
-  const closeMobileMenu = () => setIsMobileMenuOpen(false);
   const iconBtn =
-    "text-[#dbe7ff] hover:text-[#22f5ff]";
+    "flex h-12 w-12 items-center justify-center text-[#f4f7ff] no-underline transition-colors hover:text-[#dfff22] focus:outline-none focus:ring-2 focus:ring-[#dfff22]/45";
   const authAction =
-    "hidden h-10 w-28 items-center justify-center text-[13px] font-black uppercase no-underline transition-colors sm:inline-flex";
-  const navText =
-    "relative text-[#dbe7ff] after:absolute after:inset-x-3 after:bottom-1 after:h-0.5 after:origin-left after:scale-x-0 after:bg-[#22f5ff] after:transition-transform hover:text-white hover:after:scale-x-100";
+    "flex h-12 items-center justify-center px-3 text-[11px] font-black uppercase text-[#f4f7ff] no-underline transition-colors hover:text-[#dfff22] focus:outline-none focus:ring-2 focus:ring-[#dfff22]/45 sm:px-4";
+  const navItemClassName = (label: string) =>
+    `relative shrink-0 px-3.5 py-2 text-[13px] font-black uppercase tracking-[0.08em] no-underline transition-colors focus:outline-none focus:ring-2 focus:ring-[#dfff22]/45 ${
+      hoveredNavItem === label
+        ? "bg-[#05070d] text-[#dfff22]"
+        : hoveredNavItem
+          ? "text-[#05070d]"
+          : "text-[#dbe7ff] hover:text-white"
+    }`;
+
+  const openSearch = () => {
+    setHoveredNavItem(null);
+    setIsSearchOpen(true);
+  };
+
+  const closeSearch = () => setIsSearchOpen(false);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-[#29324a] bg-[#05070d]/88 backdrop-blur-xl">
-      <nav
-        className="flex h-14 w-full items-center justify-between px-4 transition-colors sm:h-16 sm:px-6"
-      >
+    <>
+      <div className="fixed left-4 top-4 z-50 sm:left-6 sm:top-6">
         <Link
           to="/"
-          className="flex min-w-0 items-center gap-3 px-1 py-1.5 no-underline"
-          onClick={closeMobileMenu}
+          className="flex min-w-0 items-center gap-3 px-1 py-1.5 text-[#f4f7ff] no-underline transition-colors hover:text-[#dfff22] focus:outline-none focus:ring-2 focus:ring-[#dfff22]/45"
         >
-          <div className="relative flex h-10 w-10 shrink-0 items-center justify-center border border-[#22f5ff]/50 bg-[#0c101a] shadow-[6px_6px_0_rgba(34,245,255,0.22)]">
-            <span className="text-[13px] font-black leading-none text-[#f4f7ff]">
-              ES
-            </span>
-            <span
-              className="absolute -right-1 top-1 h-7 w-1"
-              style={{ backgroundColor: accent }}
-            />
-          </div>
           <div className="min-w-0">
             <span className="block text-sm font-black uppercase leading-none tracking-[0.08em] text-[#f4f7ff]">
               EloStats
@@ -78,153 +79,117 @@ const Header = () => {
             </span>
           </div>
         </Link>
+      </div>
 
-        <div className="hidden items-center gap-1 md:flex">
-          {navItems.map((item) => (
-            <Link
-              key={item.label}
-              to={item.to}
-              className={`px-3.5 py-2 text-[13px] font-black uppercase tracking-[0.08em] transition-colors ${navText}`}
-            >
-              {item.label}
+      <div className="fixed right-0 top-4 z-50 flex items-center gap-0 sm:top-6">
+        {!accessToken ? (
+          <>
+            <Link to="/login" className={authAction}>
+              Sign in
             </Link>
-          ))}
-        </div>
-
-        <div className="flex items-center gap-0">
-          {!accessToken ? (
-            <>
+            <Link to="/register" className={authAction}>
+              Register
+            </Link>
+          </>
+        ) : (
+          <>
+            <Link to="/dashboard" className={iconBtn} title="Dashboard">
+              <LayoutDashboard className="h-4 w-4" />
+            </Link>
+            {userId && (
               <Link
-                to="/login"
-                className={`${authAction} border border-[#29324a] bg-transparent text-[#dbe7ff] hover:text-[#22f5ff]`}
-                onClick={closeMobileMenu}
+                to={`/profile/${userId}`}
+                className={iconBtn}
+                title="Settings"
               >
-                Sign in
+                <Settings className="h-4 w-4" />
               </Link>
-              <Link
-                to="/register"
-                className={`${authAction} bg-[#f4ff2f] text-[#05070d] hover:bg-[#22f5ff]`}
-                onClick={closeMobileMenu}
-              >
-                Register
-              </Link>
-            </>
-          ) : (
-            <>
-              <Link
-                to="/dashboard"
-                className={`hidden h-10 w-10 items-center justify-center border border-[#29324a] no-underline transition-colors sm:flex ${iconBtn}`}
-                title="Dashboard"
-                onClick={closeMobileMenu}
-              >
-                <LayoutDashboard className="h-4 w-4" />
-              </Link>
-              {userId && (
-                <Link
-                  to={`/profile/${userId}`}
-                  className={`hidden h-10 w-10 items-center justify-center border border-[#29324a] no-underline transition-colors sm:flex ${iconBtn}`}
-                  title="Settings"
-                  onClick={closeMobileMenu}
-                >
-                  <Settings className="h-4 w-4" />
-                </Link>
-              )}
-              <button
-                onClick={() => {
-                  closeMobileMenu();
-                  logout();
-                }}
-                className={`hidden h-10 w-10 items-center justify-center border border-[#29324a] transition-colors sm:flex ${iconBtn}`}
-                title="Sign out"
-              >
-                <LogOut className="h-4 w-4" />
-              </button>
-            </>
-          )}
-
-          <button
-            type="button"
-            className="flex h-10 w-10 items-center justify-center border border-[#29324a] text-[#f4f7ff] transition-colors hover:text-[#22f5ff] md:hidden"
-            onClick={() => setIsMobileMenuOpen((isOpen) => !isOpen)}
-            aria-label="Toggle navigation"
-            aria-expanded={isMobileMenuOpen}
-          >
-            {isMobileMenuOpen ? (
-              <X className="h-5 w-5" />
-            ) : (
-              <Menu className="h-5 w-5" />
             )}
-          </button>
-        </div>
-      </nav>
+            <button
+              onClick={() => logout()}
+              className={iconBtn}
+              title="Sign out"
+              type="button"
+            >
+              <LogOut className="h-4 w-4" />
+            </button>
+          </>
+        )}
+      </div>
 
-      {isMobileMenuOpen && (
-        <div className="border-t border-[#29324a] bg-[#05070d]/96 px-4 py-4 shadow-[0_24px_70px_rgba(0,0,0,0.45)] md:hidden">
-          <div className="grid gap-1">
-            {navItems.map((item) => (
-              <Link
-                key={item.label}
-                to={item.to}
-                className="border-l-2 border-transparent px-3 py-3 text-left text-sm font-black uppercase tracking-[0.1em] text-[#dbe7ff] transition hover:border-[#22f5ff] hover:bg-[#22f5ff]/10 hover:text-white"
-                onClick={closeMobileMenu}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
-
-          <div className="mt-4 grid gap-2 border-t border-[#29324a] pt-4">
-            {!accessToken ? (
-              <>
-                <Link
-                  to="/login"
-                  className="border border-[#29324a] px-3 py-3 text-sm font-bold uppercase text-[#dbe7ff] no-underline"
-                  onClick={closeMobileMenu}
-                >
-                  Sign in
-                </Link>
-                <Link
-                  to="/register"
-                  className="bg-[#f4ff2f] px-3 py-3 text-sm font-black uppercase text-[#05070d] no-underline"
-                  onClick={closeMobileMenu}
-                >
-                  Register
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link
-                  to="/dashboard"
-                  className="border border-[#29324a] px-3 py-3 text-sm font-bold uppercase text-[#dbe7ff] no-underline"
-                  onClick={closeMobileMenu}
-                >
-                  Dashboard
-                </Link>
-                {userId && (
-                  <Link
-                    to={`/profile/${userId}`}
-                    className="border border-[#29324a] px-3 py-3 text-sm font-bold uppercase text-[#dbe7ff] no-underline"
-                    onClick={closeMobileMenu}
-                  >
-                    Settings
-                  </Link>
-                )}
-                <button
-                  type="button"
-                  className="bg-[#f4ff2f] px-3 py-3 text-left text-sm font-black uppercase text-[#05070d]"
-                  onClick={() => {
-                    closeMobileMenu();
-                    logout();
-                  }}
-                >
-                  Sign out
-                </button>
-              </>
-            )}
-          </div>
-        </div>
+      {isSearchOpen && (
+        <button
+          type="button"
+          aria-label="Close search"
+          className="fixed inset-0 z-40 cursor-default bg-[#05070d]/18 backdrop-blur-md"
+          onClick={closeSearch}
+        />
       )}
-    </header>
+
+      {isSearchOpen ? (
+        <div className="fixed inset-x-0 bottom-0 z-50 border-t border-[#dfff22]/50 bg-[#05070d]/92 px-4 py-3 shadow-[0_-24px_90px_rgba(0,0,0,0.5)] backdrop-blur-xl sm:px-6">
+          <div className="mx-auto flex max-w-7xl items-start gap-3">
+            <PlayerSearchCombobox
+              autoFocus
+              className="relative flex min-w-0 flex-1 flex-col gap-3 sm:flex-row"
+              inputContainerClassName="relative min-w-0 flex-1"
+              onNavigate={closeSearch}
+            />
+
+            <button
+              type="button"
+              aria-label="Close search"
+              className="flex h-14 w-14 shrink-0 items-center justify-center text-[#f4f7ff] transition-colors hover:text-[#dfff22] focus:outline-none focus:ring-2 focus:ring-[#dfff22]/45"
+              onClick={closeSearch}
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+        </div>
+      ) : (
+        <header
+          className="fixed inset-x-0 bottom-0 z-50 overflow-hidden border-t border-[#29324a] bg-[#05070d]/88 backdrop-blur-xl"
+          onMouseLeave={() => setHoveredNavItem(null)}
+        >
+          <div
+            className={`pointer-events-none absolute inset-0 origin-bottom bg-[#dfff22] transition-transform duration-300 ease-out ${
+              hoveredNavItem ? "scale-y-100" : "scale-y-0"
+            }`}
+          />
+
+          <nav className="relative flex h-14 w-full items-center justify-center overflow-x-auto px-3 transition-colors sm:h-16">
+            <div className="relative z-10 flex min-w-max items-center gap-1">
+              {navItems.map((item) =>
+                item.to ? (
+                  <Link
+                    key={item.label}
+                    to={item.to}
+                    className={navItemClassName(item.label)}
+                    onBlur={() => setHoveredNavItem(null)}
+                    onFocus={() => setHoveredNavItem(item.label)}
+                    onMouseEnter={() => setHoveredNavItem(item.label)}
+                  >
+                    {item.label}
+                  </Link>
+                ) : (
+                  <button
+                    key={item.label}
+                    type="button"
+                    className={navItemClassName(item.label)}
+                    onBlur={() => setHoveredNavItem(null)}
+                    onClick={openSearch}
+                    onFocus={() => setHoveredNavItem(item.label)}
+                    onMouseEnter={() => setHoveredNavItem(item.label)}
+                  >
+                    {item.label}
+                  </button>
+                ),
+              )}
+            </div>
+          </nav>
+        </header>
+      )}
+    </>
   );
 };
 
