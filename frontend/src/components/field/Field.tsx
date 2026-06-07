@@ -22,8 +22,8 @@ const Field = <T extends FieldValues>({
           <div>
             <div
               className={cn(
-                "w-full rounded-xl border bg-[#061810] px-4 pb-4 pt-2.5",
-                error ? "border-red-400" : "border-[#2d5a40]",
+                "w-full border bg-[#05070d] px-4 pb-4 pt-2.5 transition-colors focus-within:border-[#22f5ff]",
+                error ? "border-red-400" : "border-[#29324a]",
               )}
             >
               <input
@@ -31,7 +31,7 @@ const Field = <T extends FieldValues>({
                 onChange={onChange}
                 onBlur={onBlur}
                 value={(value || "").toString()}
-                className="w-full bg-transparent text-[#fff8df] outline-none placeholder:text-[#8da383]"
+                className="w-full bg-transparent text-[#f4f7ff] outline-none placeholder:text-[#94a3b8]"
                 {...rest}
               />
             </div>

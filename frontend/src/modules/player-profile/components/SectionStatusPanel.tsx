@@ -17,11 +17,11 @@ const SectionStatusPanel = ({ title, section }: SectionStatusPanelProps) => {
       {section.status === "rejected" ? (
         <Unavailable message={section.error} />
       ) : items.length ? (
-        <pre className="max-h-80 overflow-auto border border-[#2b312f] bg-black/20 p-4 text-xs text-[#a9afa9]">
+        <pre className="max-h-80 overflow-auto border border-[#20283c] bg-black/20 p-4 text-xs text-[#aab7cf]">
           {JSON.stringify(section.data, null, 2)}
         </pre>
       ) : (
-        <p className="text-sm text-[#a9afa9]">No records returned.</p>
+        <p className="text-sm text-[#aab7cf]">No records returned.</p>
       )}
     </Panel>
   );

@@ -43,8 +43,8 @@ const LoginPage = () => {
 
   return (
     <AuthPageLayout>
-      <h1 className="text-3xl font-bold tracking-tight">Login</h1>
-      <p className="mt-3 mb-6 text-sm leading-6 text-[#c9d5b9]">
+      <h1 className="text-3xl font-black uppercase tracking-normal">Login</h1>
+      <p className="mt-3 mb-6 text-sm leading-6 text-[#aab7cf]">
         Use your email and password to continue.
       </p>
 
@@ -57,24 +57,24 @@ const LoginPage = () => {
           <AuthFields control={control} autoCompletePassword="current-password" />
 
           {error && (
-            <p className="rounded-xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                <p className="border border-red-400/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">
               {error}
             </p>
           )}
 
           <button
-            className="w-full rounded-xl bg-[#ffe8a0] px-5 py-4 font-semibold text-[#102518] transition hover:bg-[#fff1bd]"
+            className="w-full bg-[#f4ff2f] px-5 py-4 font-black uppercase text-[#05070d] transition hover:bg-[#22f5ff] focus:outline-none focus:ring-2 focus:ring-[#22f5ff]/60 [clip-path:polygon(0_0,calc(100%-12px)_0,100%_12px,100%_100%,12px_100%,0_calc(100%-12px))]"
             type="submit"
           >
             Login
           </button>
 
           <Link
-            className="block w-full rounded-xl px-4 py-3 text-center text-sm font-medium text-[#c9d5b9] no-underline transition hover:bg-[#ffe8a0]/10 hover:text-[#ffe8a0]"
+            className="block w-full border border-transparent px-4 py-3 text-center text-sm font-bold uppercase text-[#aab7cf] no-underline transition hover:border-[#22f5ff]/45 hover:bg-[#22f5ff]/10 hover:text-[#22f5ff]"
             to="/register"
           >
             Don't have an account?
-            <span className="font-semibold text-[#ffe8a0]"> Sign up</span>
+            <span className="font-semibold text-[#22f5ff]"> Sign up</span>
           </Link>
         </form>
       )}

@@ -15,16 +15,16 @@ const StatsPanel = ({ section }: StatsPanelProps) => {
       {section.status === "rejected" ? (
         <Unavailable message={section.error} />
       ) : stats.length ? (
-        <div className="grid border border-[#2b312f] sm:grid-cols-2">
+        <div className="grid border border-[#20283c] sm:grid-cols-2">
           {stats.slice(0, 12).map(([label, value]) => (
             <div
               key={label}
-              className="border-b border-r border-[#2b312f] bg-black/20 p-4 last:border-b-0 sm:[&:nth-last-child(-n+2)]:border-b-0"
+              className="border-b border-r border-[#20283c] bg-black/20 p-4 last:border-b-0 sm:[&:nth-last-child(-n+2)]:border-b-0"
             >
-              <p className="text-[11px] font-black uppercase tracking-[0.16em] text-[#858c87]">
+              <p className="text-[11px] font-black uppercase tracking-[0.16em] text-[#94a3b8]">
                 {label}
               </p>
-              <p className="mt-2 text-2xl font-black text-[#e6dfd3]">
+              <p className="mt-2 text-2xl font-black text-[#f4f7ff]">
                 {formatValue(value)}
               </p>
             </div>

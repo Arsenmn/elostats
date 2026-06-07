@@ -11,6 +11,7 @@ import NotFoundPage from "../shared/ui/NotFoundPage";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import PlayerProfilePage from "../pages/PlayerProfilePage";
+import PlayersPage from "../pages/PlayersPage";
 import PublicRoutes from "./PublicRoutes";
 import { useAuth } from "../hooks/useAuth.hook";
 
@@ -40,6 +41,10 @@ const Routes = () => {
 
         <Route path="/auth" element={<PublicRoutes />}>
           <Route index element={<Navigate to="/login" replace />} />
+        </Route>
+
+        <Route path="/players" element={<PublicRoutes />}>
+          <Route index element={<PlayersPage />} />
         </Route>
 
         <Route path="/players/:nickname" element={<PublicRoutes />}>

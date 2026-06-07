@@ -26,12 +26,12 @@ const CollectionPanel = ({ title, icon, section }: CollectionPanelProps) => {
           {items.slice(0, 5).map((item, index) => (
             <div
               key={getStableKey(item, index)}
-              className="border-l-2 border-[#d66f7c] bg-black/25 px-4 py-3"
+              className="border-l-2 border-[#22f5ff] bg-black/25 px-4 py-3"
             >
-              <p className="truncate font-bold text-[#e6dfd3]">
+              <p className="truncate font-bold text-[#f4f7ff]">
                 {formatValue(item.name ?? item.nickname ?? item.team_id)}
               </p>
-              <p className="mt-1 text-xs font-bold uppercase tracking-[0.14em] text-[#858c87]">
+              <p className="mt-1 text-xs font-bold uppercase tracking-[0.14em] text-[#94a3b8]">
                 {formatValue(item.type ?? item.region ?? item.status)}
               </p>
             </div>

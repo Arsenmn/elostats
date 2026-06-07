@@ -12,6 +12,7 @@ import {
   FaceitPlayer,
   FaceitPlayerProfile,
   FaceitProfileSection,
+  FaceitRankingResponse,
   FaceitRawObject,
   FaceitSearchPlayersResponse,
 } from './faceit.types';
@@ -21,6 +22,9 @@ const DEFAULT_GAME_ID = 'cs2';
 const DEFAULT_LIST_LIMIT = 20;
 const DEFAULT_SEARCH_LIMIT = 10;
 const MAX_SEARCH_LIMIT = 20;
+const DEFAULT_RANKING_REGION = 'EU';
+const DEFAULT_RANKING_LIMIT = 50;
+const MAX_RANKING_LIMIT = 100;
 
 @Injectable()
 export class FaceitService {
@@ -126,6 +130,38 @@ export class FaceitService {
         ranking,
       },
     };
+  }
+
+  async getTopPlayers({
+    gameId = DEFAULT_GAME_ID,
+    region = DEFAULT_RANKING_REGION,
+    country,
+    offset = 0,
+    limit = DEFAULT_RANKING_LIMIT,
+  }: {
+    gameId?: string;
+    region?: string;
+    country?: string;
+    offset?: number;
+    limit?: number;
+  }): Promise<FaceitRankingResponse> {
+    const normalizedGameId = gameId.trim() || DEFAULT_GAME_ID;
+    const normalizedRegion = (
+      region.trim() || DEFAULT_RANKING_REGION
+    ).toUpperCase();
+    const normalizedOffset = Math.max(offset, 0);
+    const normalizedLimit = Math.min(Math.max(limit, 1), MAX_RANKING_LIMIT);
+
+    return this.getFaceitResource(
+      `/rankings/games/${encodeURIComponent(
+        normalizedGameId,
+      )}/regions/${encodeURIComponent(normalizedRegion)}`,
+      {
+        offset: normalizedOffset,
+        limit: normalizedLimit,
+        ...(country?.trim() ? { country: country.trim().toLowerCase() } : {}),
+      },
+    );
   }
 
   private async getPlayerByNickname(nickname: string): Promise<FaceitPlayer> {

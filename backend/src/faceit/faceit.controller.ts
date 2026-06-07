@@ -13,6 +13,23 @@ import { FaceitService } from './faceit.service';
 export class FaceitController {
   constructor(private readonly faceitService: FaceitService) {}
 
+  @Get('rankings')
+  getTopPlayers(
+    @Query('game') game?: string,
+    @Query('region') region?: string,
+    @Query('country') country?: string,
+    @Query('offset') offset?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.faceitService.getTopPlayers({
+      gameId: game,
+      region,
+      country,
+      offset: Number(offset) || undefined,
+      limit: Number(limit) || undefined,
+    });
+  }
+
   @Get('search')
   searchPlayers(
     @Query('nickname') nickname?: string,

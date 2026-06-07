@@ -4,7 +4,7 @@ interface UnavailableProps {
 
 const Unavailable = ({ message }: UnavailableProps) => {
   return (
-    <p className="border border-dashed border-[#3a4240] bg-black/20 p-4 text-sm text-[#a9afa9]">
+    <p className="border border-dashed border-[#33405f] bg-black/20 p-4 text-sm text-[#aab7cf]">
       {message ?? "This FACEIT section is unavailable."}
     </p>
   );

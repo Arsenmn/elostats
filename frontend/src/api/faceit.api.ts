@@ -1,6 +1,7 @@
 import { apiClient } from "./apiClient";
 import type {
   FaceitPlayerProfile,
+  FaceitRankingResponse,
   FaceitSearchPlayersResponse,
 } from "../types/faceit.interface";
 
@@ -24,6 +25,33 @@ export const faceitApi = {
 
     return apiClient.publicRequest<FaceitSearchPlayersResponse>(
       `/faceit/search?${params.toString()}`,
+    );
+  },
+
+  getTopPlayers: async ({
+    game = "cs2",
+    region = "EU",
+    country,
+    offset = 0,
+    limit = 50,
+  }: {
+    game?: string;
+    region?: string;
+    country?: string;
+    offset?: number;
+    limit?: number;
+  } = {}) => {
+    const params = new URLSearchParams({
+      game,
+      region,
+      offset: String(offset),
+      limit: String(limit),
+    });
+
+    if (country) params.set("country", country);
+
+    return apiClient.publicRequest<FaceitRankingResponse>(
+      `/faceit/rankings?${params.toString()}`,
     );
   },
 };

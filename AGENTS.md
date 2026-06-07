@@ -67,3 +67,5 @@ Pull requests should include a short summary, test/build commands run, linked is
 ## Security & Configuration Tips
 
 Keep secrets in env files and do not commit real API keys. Backend requires `DATABASE_URL`, `JWT_SECRET`, and `FACEIT_API_KEY`. Frontend reads `VITE_BACKEND_ADDR` from `frontend/.env`.
+
+Completely ignore backend-fastapi folder at all, this is educational folder - I'm trying to rewrite current backend on another framework, so theres no need in your help. If i even ask you to make changes on fastapi backend of this project always ask me about should you make changes.
