@@ -10,17 +10,26 @@ import HomePage from "../pages/HomePage";
 import NotFoundPage from "../shared/ui/NotFoundPage";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
+import OAuthCallbackPage from "../pages/OAuthCallbackPage";
 import PlayerProfilePage from "../pages/PlayerProfilePage";
 import PlayersPage from "../pages/PlayersPage";
+import AnalysisPage from "../pages/AnalysisPage";
+import ComparePage from "../pages/ComparePage";
 import PublicRoutes from "./PublicRoutes";
 import { useAuth } from "../hooks/useAuth.hook";
+import Header from "../components/header/Header";
 
 const ProtectedRoutes = () => {
   const { accessToken } = useAuth();
 
   if (!accessToken) return <Navigate to="/login" replace />;
 
-  return <Outlet />;
+  return (
+    <>
+      <Header />
+      <Outlet />
+    </>
+  );
 };
 
 const Routes = () => {
@@ -41,6 +50,7 @@ const Routes = () => {
 
         <Route path="/auth" element={<PublicRoutes />}>
           <Route index element={<Navigate to="/login" replace />} />
+          <Route path="oauth/callback" element={<OAuthCallbackPage />} />
         </Route>
 
         <Route path="/players" element={<PublicRoutes />}>
@@ -49,6 +59,14 @@ const Routes = () => {
 
         <Route path="/players/:nickname" element={<PublicRoutes />}>
           <Route index element={<PlayerProfilePage />} />
+        </Route>
+
+        <Route path="/analysis" element={<PublicRoutes />}>
+          <Route index element={<AnalysisPage />} />
+        </Route>
+
+        <Route path="/compare" element={<PublicRoutes />}>
+          <Route index element={<ComparePage />} />
         </Route>
 
         <Route element={<ProtectedRoutes />}>

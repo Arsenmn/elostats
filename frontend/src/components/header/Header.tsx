@@ -1,16 +1,40 @@
 import { useMemo, useState } from "react";
 import { useLocation, Link } from "react-router";
-import { LogOut, Settings, LayoutDashboard, X } from "lucide-react";
+import {
+  LogOut,
+  Settings,
+  LayoutDashboard,
+  X,
+  Search,
+  Crown,
+  ChartArea,
+  GitCompareArrows,
+} from "lucide-react";
 import { jwtDecode } from "jwt-decode";
 import { useAuth } from "../../hooks/useAuth.hook";
 import { useLogout } from "../../hooks/useLogout.hook";
 import PlayerSearchCombobox from "../../modules/player-search/components/PlayerSearchCombobox";
 
 const navItems = [
-  { label: "Search" },
-  { label: "Stats", to: "/" },
-  { label: "Compare", to: "/" },
-  { label: "Leaderboards", to: "/players" },
+  { id: "search", label: "Search", icon: <Search className="h-5 w-5" /> },
+  {
+    id: "stats",
+    label: "Analysis",
+    icon: <ChartArea className="h-5 w-5" />,
+    to: "/analysis",
+  },
+  {
+    id: "compare",
+    label: "Compare",
+    icon: <GitCompareArrows className="h-5 w-5" />,
+    to: "/compare",
+  },
+  {
+    id: "leaderboards",
+    label: "Leaderboards",
+    icon: <Crown className="h-5 w-5" />,
+    to: "/players",
+  },
 ];
 
 interface AccessTokenPayload {
@@ -47,13 +71,13 @@ const Header = () => {
     "flex h-12 w-12 items-center justify-center text-[#f4f7ff] no-underline transition-colors hover:text-[#dfff22] focus:outline-none focus:ring-2 focus:ring-[#dfff22]/45";
   const authAction =
     "flex h-12 items-center justify-center px-3 text-[11px] font-black uppercase text-[#f4f7ff] no-underline transition-colors hover:text-[#dfff22] focus:outline-none focus:ring-2 focus:ring-[#dfff22]/45 sm:px-4";
-  const navItemClassName = (label: string) =>
-    `relative shrink-0 px-3.5 py-2 text-[13px] font-black uppercase tracking-[0.08em] no-underline transition-colors focus:outline-none focus:ring-2 focus:ring-[#dfff22]/45 ${
-      hoveredNavItem === label
-        ? "bg-[#05070d] text-[#dfff22]"
+  const navItemClassName = (id: string) =>
+    `group relative flex h-11 shrink-0 items-center overflow-hidden text-[13px] font-black uppercase tracking-[0.08em] no-underline transition-[width,color,background-color] duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-[#dfff22]/45 ${
+      hoveredNavItem === id
+        ? "w-40 bg-[#05070d] text-[#dfff22]"
         : hoveredNavItem
-          ? "text-[#05070d]"
-          : "text-[#dbe7ff] hover:text-white"
+          ? "w-11 text-[#05070d]"
+          : "w-11 text-[#dbe7ff] hover:text-white"
     }`;
 
   const openSearch = () => {
@@ -132,6 +156,7 @@ const Header = () => {
             <PlayerSearchCombobox
               autoFocus
               className="relative flex min-w-0 flex-1 flex-col gap-3 sm:flex-row"
+              dropdownPlacement="top"
               inputContainerClassName="relative min-w-0 flex-1"
               onNavigate={closeSearch}
             />
@@ -162,26 +187,36 @@ const Header = () => {
               {navItems.map((item) =>
                 item.to ? (
                   <Link
-                    key={item.label}
+                    key={item.id}
                     to={item.to}
-                    className={navItemClassName(item.label)}
+                    aria-label={item.label}
+                    className={navItemClassName(item.id)}
                     onBlur={() => setHoveredNavItem(null)}
-                    onFocus={() => setHoveredNavItem(item.label)}
-                    onMouseEnter={() => setHoveredNavItem(item.label)}
+                    onFocus={() => setHoveredNavItem(item.id)}
+                    onMouseEnter={() => setHoveredNavItem(item.id)}
                   >
-                    {item.label}
+                    <NavItemContent
+                      icon={item.icon}
+                      isVisible={hoveredNavItem === item.id}
+                      label={item.label}
+                    />
                   </Link>
                 ) : (
                   <button
-                    key={item.label}
+                    key={item.id}
                     type="button"
-                    className={navItemClassName(item.label)}
+                    aria-label={item.label}
+                    className={navItemClassName(item.id)}
                     onBlur={() => setHoveredNavItem(null)}
                     onClick={openSearch}
-                    onFocus={() => setHoveredNavItem(item.label)}
-                    onMouseEnter={() => setHoveredNavItem(item.label)}
+                    onFocus={() => setHoveredNavItem(item.id)}
+                    onMouseEnter={() => setHoveredNavItem(item.id)}
                   >
-                    {item.label}
+                    <NavItemContent
+                      icon={item.icon}
+                      isVisible={hoveredNavItem === item.id}
+                      label={item.label}
+                    />
                   </button>
                 ),
               )}
@@ -192,5 +227,32 @@ const Header = () => {
     </>
   );
 };
+
+function NavItemContent({
+  icon,
+  isVisible,
+  label,
+}: {
+  icon: React.ReactNode;
+  isVisible: boolean;
+  label: string;
+}) {
+  return (
+    <>
+      <span className="flex h-11 w-11 shrink-0 items-center justify-center transition-transform duration-300 ease-out group-hover:-translate-x-0.5">
+        {icon}
+      </span>
+      <span
+        className={`block overflow-hidden whitespace-nowrap text-[11px] font-black uppercase tracking-[0.08em] transition-[max-width,opacity,transform] duration-300 ease-out ${
+          isVisible
+            ? "max-w-28 translate-x-0 opacity-100"
+            : "max-w-0 -translate-x-3 opacity-0"
+        }`}
+      >
+        {label}
+      </span>
+    </>
+  );
+}
 
 export default Header;

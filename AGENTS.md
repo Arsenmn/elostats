@@ -1,71 +1,217 @@
-# Repository Guidelines
+Prefer simplicity
 
-## Product Context
+Always choose the simplest solution that satisfies current requirements.
 
-EloStats is a fullstack analytics app for CS2 players, built around FACEIT and Steam data. The product should help users search public players, inspect FACEIT/Steam profiles, analyze stats and match history, compare players, identify strengths and weaknesses, and review championship or tournament performance.
+Do not introduce abstractions, generic layers, factories, wrappers, adapters, or configuration systems unless they solve an existing problem.
 
-Longer-term features include AI-assisted analysis through OpenAI APIs, such as comparing two or more players, summarizing player form, explaining weaknesses, highlighting standout strengths, and generating actionable insights from FACEIT, Steam, match, and championship data. Keep architecture extensible for aggregated data pipelines, comparison workflows, and future AI analysis services rather than hardcoding one-off page fetches.
+Avoid speculative architecture.
 
-## Architecture Expectations
+Follow YAGNI.
 
-Treat this codebase as a multi-developer production project. Apply SOLID principles and keep responsibilities separated. Use a classic component-oriented React architecture with domain modules for larger product areas; do not drift into FSD unless the whole project is intentionally migrated to it.
+Readability over cleverness
 
-Frontend conventions:
+Code is read far more often than it is written.
 
-- `pages/` contains route-level components. Pages may own route params, loading/error states, page-level layout, and composition of a module's sections.
-- `components/` contains shared app-level UI used across domains, such as header, auth form fields, and generic controls.
-- `modules/<domain>/` contains cohesive product areas that have multiple components, hooks, local helpers, or local constants. Examples: `modules/player-profile`, `modules/player-search`, future `modules/player-compare`, `modules/championship-analysis`, and `modules/ai-analysis`.
-- Inside a module, use `components/` for React components and `lib/` for non-React helpers, formatters, constants, and data extraction logic. Do not put non-component utilities in generic component folders.
-- `api/` contains backend API clients and external boundary calls from the frontend. `types/` contains shared frontend TypeScript contracts. `hooks/` contains reusable app-level hooks.
+Prefer explicit code over compact code.
 
-Avoid artificial layers that only pass props through or wrap markup without meaningful reuse. Keep small one-use helpers local to their owning file. Extract components when they represent a meaningful UI section, are reused, or make a large page materially easier to review. Backend modules should expose clear service boundaries around external providers like FACEIT, Steam, and OpenAI, keeping API keys server-side and returning stable typed DTOs to the frontend.
+Prefer understandable code over clever code.
 
-## Project Structure & Module Organization
+Future maintainers should understand the implementation without reading unrelated files.
 
-This repository contains a NestJS backend and a Vite React frontend.
+Single Responsibility
 
-- `backend/src/` contains Nest modules, controllers, services, DTOs, and guards.
-- `backend/prisma/` contains the Prisma schema and migrations.
-- `backend/test/` contains e2e tests; backend unit tests use `*.spec.ts` under `backend/src/`.
-- `frontend/src/` contains React pages, routes, providers, hooks, components, API clients, types, and styles.
-- `frontend/public/` contains static assets served by Vite.
-- Root `Makefile` provides local environment and Prisma helpers.
+Every class, service, hook, component, and utility should have one clear responsibility.
 
-## Build, Test, and Development Commands
+If a file is difficult to describe in a single sentence, it likely contains too many responsibilities.
 
-Run commands from the repository root unless noted.
+Dependency Direction
 
-- `make env-up` starts the Postgres Docker service.
-- `make env-down` stops the Docker environment.
-- `make prisma-generate` regenerates Prisma client files.
-- `make prisma-migrate` runs development database migrations.
-- `make backend-dev` stops anything on port `3000`, then starts Nest in watch mode.
-- `make frontend-dev` starts the Vite dev server.
-- `cd backend && npm run build` builds the Nest backend.
-- `cd frontend && npm run build` type-checks and builds the frontend.
-- `cd backend && npm test` runs Jest unit tests.
-- `cd backend && npm run test:e2e` runs backend e2e tests.
+High-level business logic must not depend directly on implementation details.
 
-## Coding Style & Naming Conventions
+Business logic should not know about:
 
-Use TypeScript throughout. Follow existing Nest naming patterns: `*.module.ts`, `*.controller.ts`, `*.service.ts`, and DTOs under `dto/`. React components use PascalCase filenames such as `HomePage.tsx`; hooks use `useX.hook.ts`.
+HTTP clients
+localStorage
+browser APIs
+database details
+external providers
 
-Backend formatting is handled by Prettier via `cd backend && npm run format`. Lint with `npm run lint` in each app. Prefer typed API responses and DTO validation over ad hoc object shapes.
+These concerns should be isolated behind services.
 
-## Testing Guidelines
+Frontend Architecture Rules
+Component responsibilities
 
-Backend tests use Jest and `ts-jest`. Name unit tests `*.spec.ts` near the code they cover. Place e2e tests in `backend/test/` and run them with `npm run test:e2e`. Add focused tests for auth, API integration, and service error handling when behavior changes.
+Components should primarily handle:
 
-The frontend currently has build/lint checks but no test runner configured; verify UI changes with `cd frontend && npm run build`.
+rendering
+user interaction
+composition
 
-## Commit & Pull Request Guidelines
+Business logic should be extracted into:
 
-This repository has no commit history yet. Use clear, conventional-style messages such as `feat: add faceit player lookup` or `fix: refresh auth tokens`.
+hooks
+module services
+helper functions
 
-Pull requests should include a short summary, test/build commands run, linked issue if applicable, and screenshots for UI changes. Note any required env changes or migration steps.
+Avoid large components containing rendering, fetching, transformation, filtering, and state management simultaneously.
 
-## Security & Configuration Tips
+State Management
 
-Keep secrets in env files and do not commit real API keys. Backend requires `DATABASE_URL`, `JWT_SECRET`, and `FACEIT_API_KEY`. Frontend reads `VITE_BACKEND_ADDR` from `frontend/.env`.
+Use the smallest state scope possible.
 
-Completely ignore backend-fastapi folder at all, this is educational folder - I'm trying to rewrite current backend on another framework, so theres no need in your help. If i even ask you to make changes on fastapi backend of this project always ask me about should you make changes.
+Order of preference:
+
+Local component state
+Context
+Global store
+
+Do not place state in global stores unless multiple unrelated parts of the application truly need it.
+
+Derived State
+
+Avoid storing derived state.
+
+Prefer computing values from existing state.
+
+Bad:
+
+const [filteredPlayers, setFilteredPlayers] = useState([]);
+
+Good:
+
+const filteredPlayers = players.filter(...)
+React Performance
+
+Do not use:
+
+useMemo
+useCallback
+React.memo
+
+without measurable benefit.
+
+Prefer readable code first.
+
+Optimize only after identifying a bottleneck.
+
+API Design Rules
+Stable Contracts
+
+Frontend must never depend directly on external provider responses.
+
+Backend should map external APIs into stable DTOs.
+
+Bad:
+
+return faceitResponse;
+
+Good:
+
+return PlayerProfileDto;
+
+This protects the frontend from provider changes.
+
+Validation
+
+Validate all incoming requests.
+
+Use DTOs and class-validator.
+
+Never trust client input.
+
+Error Handling
+
+Do not expose provider errors directly.
+
+Convert external errors into application-specific exceptions.
+
+Bad:
+
+throw error;
+
+Good:
+
+throw new FaceitUnavailableException();
+Backend Architecture Rules
+Services
+
+Services should contain business logic.
+
+Controllers should:
+
+validate requests
+call services
+return responses
+
+Controllers should not contain business logic.
+
+External Providers
+
+FACEIT, Steam, OpenAI, and future integrations should each have dedicated provider services.
+
+Example:
+
+providers/
+├── faceit
+├── steam
+├── openai
+
+Business services should not perform raw HTTP calls.
+
+Database Access
+
+Prisma queries should be isolated.
+
+Avoid spreading Prisma calls across many services.
+
+Prefer repository-style abstractions when database access becomes complex.
+
+AI Feature Architecture
+
+Future AI features must remain isolated from domain logic.
+
+Create dedicated modules:
+
+modules/
+├── ai-analysis
+├── player-comparison
+├── championship-analysis
+
+AI services should consume structured player data.
+
+AI services should not directly call FACEIT or Steam APIs.
+
+Keep AI layers dependent on internal DTOs.
+
+Code Review Standards
+
+Before creating code, verify:
+
+Is this the simplest solution?
+Is this responsibility located in the correct layer?
+Does this introduce unnecessary abstraction?
+Can another developer understand this in 30 seconds?
+Is the code consistent with existing project conventions?
+Does this create future maintenance burden?
+Refactoring Rules
+
+When modifying existing code:
+
+improve surrounding code when reasonable
+reduce complexity where possible
+remove dead code
+remove duplicate logic
+leave files cleaner than before
+
+Do not perform large unrelated refactors.
+
+Important Project-Specific Rules
+backend-fastapi
+
+The backend-fastapi directory is an educational sandbox.
+
+Ignore it completely.
+
+Never modify, refactor, analyze, or generate changes for it unless explicitly asked.
+
+If a request involves backend-fastapi, first ask whether changes should be made there.

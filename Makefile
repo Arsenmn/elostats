@@ -51,3 +51,15 @@ backend-dev: backend-stop
 
 frontend-dev:
 	@cd frontend && npm run dev
+
+deps-graph-frontend:
+	@cd frontend && npm run deps:graph
+
+deps-graph-backend:
+	@cd backend && npm run deps:graph
+
+deps-graph-fullstack:
+	@mkdir -p reports/architecture
+	@./frontend/node_modules/.bin/depcruise --config .dependency-cruiser.graph.cjs --output-type dot frontend/src backend/src | dot -Tsvg -o reports/architecture/fullstack-dependencies.svg
+
+deps-graph: deps-graph-frontend deps-graph-backend deps-graph-fullstack

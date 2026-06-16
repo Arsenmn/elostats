@@ -93,6 +93,10 @@ class ApiClient {
     return url;
   }
 
+  getPublicUrl(endpoint: string): string {
+    return this.getUrl(endpoint);
+  }
+
   private async parseResponse<T>(response: Response): Promise<T> {
     const text = await response.text();
     const data = text ? JSON.parse(text) : null;

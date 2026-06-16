@@ -22,15 +22,21 @@ const SEARCH_DEBOUNCE_MS = 250;
 interface PlayerSearchComboboxProps {
   autoFocus?: boolean;
   className?: string;
+  dropdownPlacement?: "bottom" | "top";
   inputContainerClassName?: string;
   onNavigate?: () => void;
+  onSelectPlayer?: (player: FaceitSearchPlayer) => void;
+  submitLabel?: string;
 }
 
 const PlayerSearchCombobox = ({
   autoFocus = false,
   className = "relative mt-8 flex flex-col gap-3 sm:flex-row",
+  dropdownPlacement = "bottom",
   inputContainerClassName = "relative w-full sm:max-w-md",
   onNavigate,
+  onSelectPlayer,
+  submitLabel = "Analyze Player",
 }: PlayerSearchComboboxProps) => {
   const [nickname, setNickname] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -53,12 +59,26 @@ const PlayerSearchCombobox = ({
 
   const shouldShowDropdown =
     isOpen && nickname.trim().length >= MIN_SEARCH_LENGTH;
+  const dropdownPlacementClassName =
+    dropdownPlacement === "top"
+      ? "bottom-[calc(100%+0.5rem)]"
+      : "top-[calc(100%+0.5rem)]";
 
   useEffect(() => {
     if (!autoFocus) return;
 
     inputRef.current?.focus();
   }, [autoFocus]);
+
+  const selectPlayer = (player: FaceitSearchPlayer) => {
+    const selectedNickname = player.nickname?.trim();
+
+    if (!selectedNickname) return;
+
+    setNickname(selectedNickname);
+    setIsOpen(false);
+    onSelectPlayer?.(player);
+  };
 
   const navigateToPlayer = (selectedNickname: string) => {
     const trimmedNickname = selectedNickname.trim();
@@ -74,7 +94,17 @@ const PlayerSearchCombobox = ({
 
     const activeSuggestion = suggestions[activeIndex];
     if (activeSuggestion?.nickname) {
+      if (onSelectPlayer) {
+        selectPlayer(activeSuggestion);
+        return;
+      }
+
       navigateToPlayer(activeSuggestion.nickname);
+      return;
+    }
+
+    if (onSelectPlayer) {
+      selectPlayer({ nickname });
       return;
     }
 
@@ -127,7 +157,9 @@ const PlayerSearchCombobox = ({
         />
 
         {shouldShowDropdown && (
-          <div className="absolute left-0 right-0 top-[calc(100%+0.5rem)] z-20 overflow-hidden border border-white/24 bg-[#05070d]/96 shadow-[0_24px_70px_rgba(0,0,0,0.58)] backdrop-blur-xl [clip-path:polygon(0_0,calc(100%-16px)_0,100%_16px,100%_100%,0_100%)]">
+          <div
+            className={`absolute left-0 right-0 z-20 overflow-hidden border border-white/24 bg-[#05070d]/96 shadow-[0_24px_70px_rgba(0,0,0,0.58)] backdrop-blur-xl [clip-path:polygon(0_0,calc(100%-16px)_0,100%_16px,100%_100%,0_100%)] ${dropdownPlacementClassName}`}
+          >
             {isFetching ? (
               <DropdownMessage message="Searching FACEIT players..." />
             ) : error ? (
@@ -140,7 +172,14 @@ const PlayerSearchCombobox = ({
                     isActive={index === activeIndex}
                     player={player}
                     onMouseEnter={() => setActiveIndex(index)}
-                    onSelect={() => navigateToPlayer(player.nickname ?? "")}
+                    onSelect={() => {
+                      if (onSelectPlayer) {
+                        selectPlayer(player);
+                        return;
+                      }
+
+                      navigateToPlayer(player.nickname ?? "");
+                    }}
                   />
                 ))}
               </ul>
@@ -155,7 +194,7 @@ const PlayerSearchCombobox = ({
         className="border border-[#f3ff2d] bg-[#f3ff2d] px-6 py-4 font-black uppercase text-[#05070d] transition hover:border-[#ff3d67] hover:bg-[#ff3d67] focus:outline-none focus:ring-2 focus:ring-[#f3ff2d]/40 [clip-path:polygon(0_0,calc(100%-16px)_0,100%_16px,100%_100%,16px_100%,0_calc(100%-16px))]"
         type="submit"
       >
-        Analyze Player
+        {submitLabel}
       </button>
     </form>
   );

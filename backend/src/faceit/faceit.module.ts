@@ -7,5 +7,6 @@ import { FaceitController } from './faceit.controller';
   imports: [HttpModule],
   controllers: [FaceitController],
   providers: [FaceitService],
+  exports: [FaceitService],
 })
 export class FaceitModule {}

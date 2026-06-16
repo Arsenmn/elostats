@@ -16,13 +16,62 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  email    String @unique
-  password String
+  email    String? @unique
+  password String?
 
   name       String @unique
   avatarPath String @default("/uploads/default-avatar.png") @map("avatar_path")
 
   phone String @default("")
 
+  isEmailConfirmed Boolean @default(false) @map("is_email_confirmed")
+
+  authVerificationCodes AuthVerificationCode[]
+  oauthAccounts         OAuthAccount[]
+
   @@map("user")
+}
+
+enum OAuthProvider {
+  GOOGLE
+  STEAM
+}
+
+model OAuthAccount {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  provider          OAuthProvider
+  providerAccountId String        @map("provider_account_id")
+  email             String?
+  displayName       String?       @map("display_name")
+  avatarUrl         String?       @map("avatar_url")
+
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+  @@map("oauth_account")
+}
+
+model AuthVerificationCode {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+
+  email        String
+  codeHash     String    @map("code_hash")
+  purpose      String
+  passwordHash String?   @map("password_hash")
+  attempts     Int       @default(0)
+  expiresAt    DateTime  @map("expires_at")
+  usedAt       DateTime? @map("used_at")
+
+  userId String? @map("user_id")
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([email])
+  @@index([userId])
+  @@map("auth_verification_code")
 }

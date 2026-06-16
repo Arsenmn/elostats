@@ -7,10 +7,14 @@ import AuthFields from "../components/auth/AuthFields";
 import AuthPageLayout from "../components/auth/AuthPageLayout";
 import { useAuth } from "../hooks/useAuth.hook";
 import { authApi } from "../api/auth.api";
+import AuthCodeForm from "../components/auth/AuthCodeForm";
+import OAuthButtons from "../components/auth/OAuthButtons";
 
 const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [verificationId, setVerificationId] = useState("");
+  const [verificationEmail, setVerificationEmail] = useState("");
   const { accessToken, setToken } = useAuth();
   const navigate = useNavigate();
 
@@ -29,6 +33,25 @@ const LoginPage = () => {
     try {
       const response = await authApi.login(data);
 
+      setVerificationId(response.verificationId);
+      setVerificationEmail(data.email);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Authentication failed");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const confirmCode = async (code: string) => {
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const response = await authApi.confirmLogin({
+        verificationId,
+        code,
+      });
+
       setToken(response.accessToken, response.refreshToken);
       reset();
       navigate("/app", { replace: true });
@@ -41,23 +64,50 @@ const LoginPage = () => {
 
   if (accessToken) return <Navigate to="/app" replace />;
 
+  const isCodeStep = Boolean(verificationId);
+
   return (
     <AuthPageLayout>
-      <h1 className="text-3xl font-black uppercase tracking-normal">Login</h1>
+      <h1 className="text-3xl font-black uppercase tracking-normal">
+        {isCodeStep ? "Confirm login" : "Login"}
+      </h1>
       <p className="mt-3 mb-6 text-sm leading-6 text-[#aab7cf]">
-        Use your email and password to continue.
+        {isCodeStep
+          ? "Enter the code from your email to finish signing in."
+          : "Use your email and password to continue."}
       </p>
 
       {isLoading ? (
         <div className="flex min-h-56 items-center justify-center">
           <Loader />
         </div>
+      ) : isCodeStep ? (
+        <>
+          {error && (
+            <p className="mb-5 border border-red-400/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+              {error}
+            </p>
+          )}
+          <AuthCodeForm
+            email={verificationEmail}
+            isLoading={isLoading}
+            onBack={() => {
+              setVerificationId("");
+              setVerificationEmail("");
+              setError("");
+            }}
+            onSubmit={confirmCode}
+          />
+        </>
       ) : (
         <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
-          <AuthFields control={control} autoCompletePassword="current-password" />
+          <AuthFields
+            control={control}
+            autoCompletePassword="current-password"
+          />
 
           {error && (
-                <p className="border border-red-400/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+            <p className="border border-red-400/40 bg-red-500/10 px-4 py-3 text-sm text-red-200">
               {error}
             </p>
           )}
@@ -68,6 +118,8 @@ const LoginPage = () => {
           >
             Login
           </button>
+
+          <OAuthButtons />
 
           <Link
             className="block w-full border border-transparent px-4 py-3 text-center text-sm font-bold uppercase text-[#aab7cf] no-underline transition hover:border-[#22f5ff]/45 hover:bg-[#22f5ff]/10 hover:text-[#22f5ff]"

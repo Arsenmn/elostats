@@ -9,6 +9,7 @@ import {
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { ConfirmAuthCodeDto } from './dto/confirm-auth-code.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -23,9 +24,23 @@ export class AuthController {
 
   @UsePipes(new ValidationPipe())
   @HttpCode(200)
+  @Post('register/confirm')
+  async confirmRegister(@Body() dto: ConfirmAuthCodeDto) {
+    return this.authService.confirmRegister(dto);
+  }
+
+  @UsePipes(new ValidationPipe())
+  @HttpCode(200)
   @Post('login')
   async login(@Body() dto: AuthDto) {
     return this.authService.login(dto);
+  }
+
+  @UsePipes(new ValidationPipe())
+  @HttpCode(200)
+  @Post('login/confirm')
+  async confirmLogin(@Body() dto: ConfirmAuthCodeDto) {
+    return this.authService.confirmLogin(dto);
   }
 
   @UsePipes(new ValidationPipe())

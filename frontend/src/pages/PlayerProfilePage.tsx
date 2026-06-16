@@ -12,6 +12,7 @@ import SectionStatusPanel from "../modules/player-profile/components/SectionStat
 import StatsPanel from "../modules/player-profile/components/StatsPanel";
 import { formatValue } from "../modules/player-profile/lib/playerProfile.utils";
 import Loader from "../shared/ui/Loader";
+import FaceitLevelIcon from "../modules/player-profile/components/FaceitLevelIcon";
 
 const profileTabs = [
   "Overview",
@@ -27,7 +28,10 @@ type ProfileTab = (typeof profileTabs)[number];
 
 const PlayerProfilePage = () => {
   const { nickname = "" } = useParams();
-  const decodedNickname = useMemo(() => decodeURIComponent(nickname), [nickname]);
+  const decodedNickname = useMemo(
+    () => decodeURIComponent(nickname),
+    [nickname],
+  );
   const [activeTab, setActiveTab] = useState<ProfileTab>("Overview");
 
   const { data, isLoading, error } = useQuery({
@@ -61,19 +65,19 @@ const PlayerProfilePage = () => {
 
         <nav className="mt-6 flex overflow-x-auto border border-[#29324a] bg-[#0c101a]">
           {profileTabs.map((item) => (
-              <button
-                key={item}
-                type="button"
-                className={`min-w-max border-r border-[#20283c] px-5 py-3 text-left text-xs font-black uppercase tracking-[0.18em] transition ${
-                  activeTab === item
-                    ? "bg-[#22f5ff] text-[#05070d]"
-                    : "text-[#94a3b8] hover:bg-[#22f5ff]/10 hover:text-[#f4f7ff]"
-                }`}
-                onClick={() => setActiveTab(item)}
-              >
-                {item}
-              </button>
-            ))}
+            <button
+              key={item}
+              type="button"
+              className={`min-w-max border-r border-[#20283c] px-5 py-3 text-left text-xs font-black uppercase tracking-[0.18em] transition ${
+                activeTab === item
+                  ? "bg-[#22f5ff] text-[#05070d]"
+                  : "text-[#94a3b8] hover:bg-[#22f5ff]/10 hover:text-[#f4f7ff]"
+              }`}
+              onClick={() => setActiveTab(item)}
+            >
+              {item}
+            </button>
+          ))}
         </nav>
 
         <ProfileTabContent activeTab={activeTab} profile={data} />
@@ -168,7 +172,9 @@ function OverviewTab({
       <section className="mt-6 grid border border-[#29324a] bg-[#0c101a] md:grid-cols-2 xl:grid-cols-4">
         <ProfileMetric
           label="Skill level"
-          value={formatValue(profile.game?.skill_level)}
+          value={
+            <FaceitLevelIcon level={profile.game?.skill_level} size="md" />
+          }
           icon={<Crosshair className="h-4 w-4" />}
         />
         <ProfileMetric
@@ -188,13 +194,20 @@ function OverviewTab({
         />
       </section>
 
-      <section className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
-        <div className="space-y-6">
-          <StatsPanel section={profile.sections.stats} />
-          <RecentMatchesPanel section={profile.sections.history} />
+      <section className="mt-6 space-y-6">
+        <StatsPanel section={profile.sections.stats} />
+        <RecentMatchesPanel section={profile.sections.history} />
+      </section>
+
+      <section className="mt-8">
+        <div className="mb-4 flex items-center gap-3">
+          <span className="h-3 w-14 bg-[#22f5ff]" />
+          <p className="text-xs font-black uppercase tracking-[0.2em] text-[#94a3b8]">
+            Profile context
+          </p>
         </div>
 
-        <aside className="space-y-6">
+        <div className="grid gap-6 xl:grid-cols-3">
           <CollectionPanel
             title="Teams"
             icon={<Swords className="h-4 w-4" />}
@@ -210,24 +223,21 @@ function OverviewTab({
             icon={<Trophy className="h-4 w-4" />}
             section={profile.sections.tournaments}
           />
-        </aside>
-      </section>
+        </div>
 
-      <section className="mt-6 grid gap-6 lg:grid-cols-2">
-        <SectionStatusPanel title="Bans" section={profile.sections.bans} />
-        <SectionStatusPanel title="Ranking" section={profile.sections.ranking} />
+        <div className="mt-6 grid gap-6 lg:grid-cols-2">
+          <SectionStatusPanel title="Bans" section={profile.sections.bans} />
+          <SectionStatusPanel
+            title="Ranking"
+            section={profile.sections.ranking}
+          />
+        </div>
       </section>
     </>
   );
 }
 
-function EmptyTabPanel({
-  title,
-  message,
-}: {
-  title: string;
-  message: string;
-}) {
+function EmptyTabPanel({ title, message }: { title: string; message: string }) {
   return (
     <section className="mt-6 border border-[#29324a] bg-[#0c101a] p-8">
       <p className="text-[11px] font-black uppercase tracking-[0.18em] text-[#22f5ff]">
@@ -249,7 +259,7 @@ function ProfileMetric({
   icon,
 }: {
   label: string;
-  value: string;
+  value: ReactNode;
   icon: ReactNode;
 }) {
   return (
@@ -261,9 +271,9 @@ function ProfileMetric({
         <p className="text-[11px] font-black uppercase tracking-[0.18em] text-[#94a3b8]">
           {label}
         </p>
-        <p className="mt-1 truncate text-2xl font-black text-[#f4f7ff]">
+        <div className="mt-1 truncate text-2xl font-black text-[#f4f7ff]">
           {value}
-        </p>
+        </div>
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Link } from "react-router";
 import { ExternalLink, Search, ShieldCheck, UserRound } from "lucide-react";
 import type { FaceitPlayerProfile } from "../../../types/faceit.interface";
+import FaceitLevelIcon from "./FaceitLevelIcon";
 
 interface ProfileHeaderProps {
   profile: FaceitPlayerProfile;
@@ -16,7 +17,7 @@ const ProfileHeader = ({ profile }: ProfileHeaderProps) => {
   const avatar =
     typeof player.avatar === "string" && player.avatar ? player.avatar : null;
   const game = profile.game;
-  const level = game?.skill_level ?? "N/A";
+  const level = game?.skill_level;
   const elo = game?.faceit_elo?.toLocaleString() ?? "N/A";
 
   return (
@@ -46,9 +47,6 @@ const ProfileHeader = ({ profile }: ProfileHeaderProps) => {
             ) : (
               <UserRound className="h-12 w-12 text-[#22f5ff]" />
             )}
-            <div className="absolute bottom-0 left-0 right-0 bg-[#22f5ff] px-2 py-1 text-center text-xs font-black uppercase text-[#05070d]">
-              Level {level}
-            </div>
           </div>
 
           <div className="min-w-0">
@@ -74,15 +72,23 @@ const ProfileHeader = ({ profile }: ProfileHeaderProps) => {
         <div className="border border-[#29324a] bg-black/40 backdrop-blur [clip-path:polygon(0_0,calc(100%-16px)_0,100%_16px,100%_100%,16px_100%,0_calc(100%-16px))]">
           <div className="grid grid-cols-2 border-b border-[#29324a]">
             <HeroStat label="FACEIT ELO" value={elo} />
-            <HeroStat label="Skill level" value={String(level)} accent />
+            <HeroStat
+              label="Skill level"
+              value={<FaceitLevelIcon level={level} size="md" />}
+              accent
+            />
           </div>
 
           <div className="flex flex-wrap gap-3 p-4">
             {links.faceit && (
-              <ExternalProfileLink href={links.faceit}>FACEIT</ExternalProfileLink>
+              <ExternalProfileLink href={links.faceit}>
+                FACEIT
+              </ExternalProfileLink>
             )}
             {links.steam && (
-              <ExternalProfileLink href={links.steam}>Steam</ExternalProfileLink>
+              <ExternalProfileLink href={links.steam}>
+                Steam
+              </ExternalProfileLink>
             )}
             <Link
               to="/"
@@ -104,7 +110,7 @@ function HeroStat({
   accent,
 }: {
   label: string;
-  value: string;
+  value: ReactNode;
   accent?: boolean;
 }) {
   return (
@@ -112,13 +118,13 @@ function HeroStat({
       <p className="text-[11px] font-black uppercase tracking-[0.18em] text-[#94a3b8]">
         {label}
       </p>
-      <p
+      <div
         className={`mt-1 text-3xl font-black ${
           accent ? "text-[#22f5ff]" : "text-[#f4f7ff]"
         }`}
       >
         {value}
-      </p>
+      </div>
     </div>
   );
 }

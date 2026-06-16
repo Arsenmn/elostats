@@ -235,7 +235,7 @@ export class FaceitService {
   }
 
   private async getPlayerHistory(playerId: string, gameId: string) {
-    return this.getFaceitResource(
+    const history = await this.getFaceitResource(
       `/players/${encodeURIComponent(playerId)}/history`,
       {
         game: gameId,
@@ -243,6 +243,104 @@ export class FaceitService {
         limit: DEFAULT_LIST_LIMIT,
       },
     );
+
+    return this.enrichPlayerHistory(history);
+  }
+
+  private async enrichPlayerHistory(history: FaceitRawObject) {
+    if (!Array.isArray(history.items)) {
+      return history;
+    }
+
+    const enrichedItems = await Promise.all(
+      history.items.map(async (item, index) => {
+        if (!this.isRecord(item) || typeof item.match_id !== 'string') {
+          return item;
+        }
+
+        if (index >= 8) {
+          return item;
+        }
+
+        try {
+          const matchDetails = await this.getMatchDetails(item.match_id);
+          const map = this.extractMatchMap(matchDetails);
+
+          return {
+            ...item,
+            ...(map ? { map } : {}),
+            match_details: matchDetails,
+          };
+        } catch {
+          return item;
+        }
+      }),
+    );
+
+    return {
+      ...history,
+      items: enrichedItems,
+    };
+  }
+
+  private async getMatchDetails(matchId: string) {
+    return this.getFaceitResource(`/matches/${encodeURIComponent(matchId)}`);
+  }
+
+  private extractMatchMap(matchDetails: FaceitRawObject) {
+    const voting = matchDetails.voting;
+
+    if (!this.isRecord(voting)) return null;
+
+    const mapVoting = voting.map;
+
+    if (!this.isRecord(mapVoting)) return null;
+
+    const pickedMapId = this.getPickedMapId(mapVoting.pick);
+
+    if (!pickedMapId) return null;
+
+    const entities = Array.isArray(mapVoting.entities)
+      ? mapVoting.entities.filter((entity): entity is FaceitRawObject =>
+          this.isRecord(entity),
+        )
+      : [];
+    const pickedMap =
+      entities.find((entity) =>
+        [
+          entity.guid,
+          entity.game_map_id,
+          entity.class_name,
+          entity.name,
+        ].includes(pickedMapId),
+      ) ?? entities[0];
+
+    return {
+      id: this.getString(pickedMap?.game_map_id) ?? pickedMapId,
+      name:
+        this.getString(pickedMap?.name) ??
+        this.formatMapName(
+          this.getString(pickedMap?.class_name) ?? pickedMapId,
+        ),
+      image_lg: this.getString(pickedMap?.image_lg),
+      image_sm: this.getString(pickedMap?.image_sm),
+      class_name: this.getString(pickedMap?.class_name) ?? pickedMapId,
+    };
+  }
+
+  private getPickedMapId(pick: unknown) {
+    if (Array.isArray(pick)) {
+      return pick.find((item): item is string => typeof item === 'string');
+    }
+
+    return typeof pick === 'string' ? pick : null;
+  }
+
+  private formatMapName(mapId: string) {
+    return mapId
+      .replace(/^de[_-]/i, '')
+      .replace(/_/g, ' ')
+      .replace(/\b\w/g, (letter) => letter.toUpperCase());
   }
 
   private async getPlayerBans(playerId: string) {
@@ -311,6 +409,14 @@ export class FaceitService {
     );
 
     return data;
+  }
+
+  private isRecord(value: unknown): value is FaceitRawObject {
+    return typeof value === 'object' && value !== null && !Array.isArray(value);
+  }
+
+  private getString(value: unknown) {
+    return typeof value === 'string' && value ? value : null;
   }
 
   private async getOptionalSection<T>(
