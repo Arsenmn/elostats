@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { TextRotate, type TextRotateRef } from "@/components/ui/text-rotate";
+import { TextRotate, type TextRotateRef } from "../ui/text-rotate";
 
 const analysisItems = [
   {
@@ -74,14 +74,14 @@ const RotatingAnalysisGallery = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative bg-[#05070d] text-[#f4f7ff]"
-      style={{ height: `${analysisItems.length * 100}vh` }}
+      className="relative border-b border-[#1d2638] bg-[#05070d] text-[#f4f7ff]"
+      style={{ height: `${analysisItems.length * 84}vh` }}
     >
       <div className="sticky top-0 h-screen overflow-hidden">
         <AnalysisSectionBackground progress={scrollProgress} />
 
-        <div className="relative z-20 grid h-full w-full items-center gap-8 px-4 py-20 sm:px-8 lg:grid-cols-2 lg:px-16">
-          <div className="relative order-2 h-[34vh] min-h-64 overflow-hidden lg:order-1 lg:h-full">
+        <div className="relative z-20 mx-auto grid h-full w-full max-w-7xl items-center gap-7 px-4 py-16 sm:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14 lg:px-10">
+          <div className="relative order-2 h-[38vh] min-h-72 overflow-hidden lg:order-1 lg:h-full">
             <AnimatePresence mode="wait" initial={false}>
               <AnalysisGalleryCard
                 key={analysisItems[activeIndex].title}
@@ -119,7 +119,7 @@ const RotatingAnalysisGallery = () => {
               />
             </h2>
 
-            <p className="mt-5 max-w-2xl text-sm font-semibold leading-6 text-[#aab7cf] sm:mt-8 sm:text-lg sm:leading-8">
+            <p className="mt-5 max-w-2xl text-sm font-semibold leading-6 text-[#aebbd0] sm:mt-8 sm:text-lg sm:leading-8">
               Each card represents a slice of the EloStats workflow: inspect
               players, compare profiles, detect patterns, and turn raw match
               data into a cleaner pre-game read.
@@ -181,7 +181,7 @@ function AnalysisSectionBackground({ progress }: { progress: number }) {
       <div className="absolute inset-0 opacity-90" style={largeDotMask} />
       <div className="absolute inset-0 opacity-75" style={fineDotMask} />
       <div className="absolute inset-0 opacity-18" style={limeSignalMask} />
-      <div className="absolute inset-0 bg-[linear-gradient(90deg,#020409_0%,rgba(2,4,9,0.34)_22%,rgba(2,4,9,0.1)_50%,rgba(2,4,9,0.42)_78%,#020409_100%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,#05070d_0%,rgba(5,7,13,0.3)_22%,rgba(5,7,13,0.08)_50%,rgba(5,7,13,0.38)_78%,#05070d_100%)]" />
       <div className="absolute inset-0 bg-[linear-gradient(180deg,#05070d_0%,rgba(5,7,13,0.1)_22%,rgba(5,7,13,0.06)_68%,#05070d_100%)]" />
       <div className="absolute inset-0 bg-[linear-gradient(rgba(244,247,255,0.025)_1px,transparent_1px)] bg-[size:100%_7px] opacity-45" />
       <div className="absolute inset-x-0 bottom-0 h-40 bg-[linear-gradient(0deg,#05070d_0%,transparent_100%)]" />
@@ -212,7 +212,7 @@ function AnalysisGalleryCard({
       transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
     >
       <motion.div
-        className="group relative h-44 w-44 overflow-hidden border border-white/16 bg-[#05070d] shadow-[0_28px_90px_rgba(0,0,0,0.52)] [clip-path:polygon(0_0,calc(100%-22px)_0,100%_22px,100%_100%,22px_100%,0_calc(100%-22px))] sm:h-64 sm:w-64 md:h-72 md:w-72 lg:h-80 lg:w-80"
+        className="group relative h-56 w-56 overflow-hidden border border-white/16 bg-[#05070d] shadow-[0_28px_90px_rgba(0,0,0,0.52)] [clip-path:polygon(0_0,calc(100%-22px)_0,100%_22px,100%_100%,22px_100%,0_calc(100%-22px))] sm:h-72 sm:w-72 md:h-80 md:w-80 lg:h-96 lg:w-96"
         initial={{ clipPath: "inset(0 18% 0 18%)" }}
         animate={{ clipPath: "inset(0 0% 0 0%)" }}
         exit={{ clipPath: "inset(0 0 0 100%)" }}
@@ -233,7 +233,10 @@ function AnalysisGalleryCard({
         <motion.div
           className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_0%,rgba(34,245,255,0.18)_38%,transparent_44%,rgba(243,255,45,0.18)_68%,transparent_74%)]"
           initial={{ opacity: 0, y: "-35%" }}
-          animate={{ opacity: [0, 0.85, 0.22, 0], y: ["-35%", "8%", "18%", "42%"] }}
+          animate={{
+            opacity: [0, 0.85, 0.22, 0],
+            y: ["-35%", "8%", "18%", "42%"],
+          }}
           transition={{ duration: 0.36, times: [0, 0.2, 0.56, 1] }}
         />
         <div className="absolute inset-x-0 top-0 h-1 bg-[#f3ff2d]" />

@@ -1,5 +1,5 @@
 import { playerProfileSectionLabels } from "../lib/playerProfile.constants";
-import type { FaceitPlayerProfile } from "../../../types/faceit.interface";
+import type { FaceitPlayerProfile } from "../../../types/faceit";
 
 interface RawDataPanelProps {
   profile: FaceitPlayerProfile;

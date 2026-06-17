@@ -1,6 +1,6 @@
 import { BrainCircuit } from "lucide-react";
 import PlayerSearchCombobox from "../../player-search/components/PlayerSearchCombobox";
-import type { FaceitSearchPlayer } from "../../../types/faceit.interface";
+import type { FaceitSearchPlayer } from "../../../types/faceit";
 
 interface PlayerAnalysisFormProps {
   isLoading: boolean;

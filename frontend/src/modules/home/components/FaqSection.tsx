@@ -25,11 +25,11 @@ const faqItems = [
 
 const FaqSection = () => {
   return (
-    <section className="relative isolate overflow-hidden border-t border-[#29324a] bg-[#05070d] px-4 py-20 text-[#f4f7ff] sm:px-6 lg:px-8">
-      <div className="pointer-events-none absolute inset-0 -z-20 bg-[linear-gradient(rgba(223,255,34,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(244,247,255,0.045)_1px,transparent_1px)] bg-[size:64px_64px]" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-40 bg-[linear-gradient(0deg,#000_0%,transparent_100%)]" />
+    <section className="relative isolate overflow-hidden bg-[#05070d] px-4 py-20 text-[#f4f7ff] sm:px-6 lg:px-8">
+      <div className="pointer-events-none absolute inset-0 -z-20 bg-[linear-gradient(rgba(223,255,34,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(244,247,255,0.035)_1px,transparent_1px)] bg-[size:64px_64px]" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-40 bg-[linear-gradient(0deg,#05070d_0%,transparent_100%)]" />
 
-      <div className="mx-auto grid max-w-7xl border border-[#29324a] bg-black/34 md:grid-cols-[minmax(220px,0.72fr)_minmax(0,1.28fr)]">
+      <div className="mx-auto grid max-w-7xl border border-[#29324a] bg-[#070a12]/82 shadow-[0_28px_120px_rgba(0,0,0,0.32)] md:grid-cols-[minmax(220px,0.72fr)_minmax(0,1.28fr)]">
         <div className="relative overflow-hidden border-b border-[#29324a] p-6 md:border-b-0 md:border-r md:p-8">
           <p className="font-mono text-xs font-black uppercase tracking-[0.22em] text-[#dfff22]">
             (04) FAQ

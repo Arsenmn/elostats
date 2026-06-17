@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import Unavailable from "./Unavailable";
 import { formatValue, getStats, isRecord } from "../lib/playerProfile.utils";
-import type { FaceitProfileSection } from "../../../types/faceit.interface";
+import type { FaceitProfileSection } from "../../../types/faceit";
 
 interface StatsPanelProps {
   section: FaceitProfileSection;

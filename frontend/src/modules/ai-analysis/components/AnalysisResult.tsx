@@ -2,7 +2,7 @@ import { AlertTriangle, CheckCircle2 } from "lucide-react";
 import type {
   AiAnalysisPlayerSnapshot,
   AiAnalysisSection,
-} from "../../../types/ai-analysis.interface";
+} from "../types/ai-analysis.interface";
 
 interface AnalysisResultProps {
   dataLimitations: string[];

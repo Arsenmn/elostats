@@ -10,11 +10,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 import { Search, UserRound } from "lucide-react";
 import { faceitApi } from "../../../api/faceit.api";
-import { useDebouncedValue } from "../../../hooks/useDebouncedValue.hook";
+import { useDebouncedValue } from "@/shared/hooks/useDebouncedValue.hook";
 import type {
   FaceitGameInfo,
   FaceitSearchPlayer,
-} from "../../../types/faceit.interface";
+} from "../../../types/faceit";
 
 const MIN_SEARCH_LENGTH = 2;
 const SEARCH_DEBOUNCE_MS = 250;

@@ -9,7 +9,7 @@ import {
 import type {
   FaceitProfileSection,
   FaceitRawObject,
-} from "../../../types/faceit.interface";
+} from "../../../types/faceit";
 
 interface RecentMatchesPanelProps {
   section: FaceitProfileSection;

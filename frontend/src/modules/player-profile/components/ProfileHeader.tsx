@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { Link } from "react-router";
 import { ExternalLink, Search, ShieldCheck, UserRound } from "lucide-react";
-import type { FaceitPlayerProfile } from "../../../types/faceit.interface";
+import type { FaceitPlayerProfile } from "../../../types/faceit";
 import FaceitLevelIcon from "./FaceitLevelIcon";
 
 interface ProfileHeaderProps {

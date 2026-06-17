@@ -3,7 +3,7 @@ import type {
   FaceitPlayerProfile,
   FaceitRankingResponse,
   FaceitSearchPlayersResponse,
-} from "../types/faceit.interface";
+} from "../types/faceit";
 
 export const faceitApi = {
   getProfile: async (nickname: string, game = "cs2") => {

@@ -1,4 +1,4 @@
-import type { FaceitRawObject } from "../../../types/faceit.interface";
+import type { FaceitRawObject } from "../../../types/faceit";
 
 export function getStats(data: unknown): Array<[string, unknown]> {
   if (!isRecord(data)) return [];

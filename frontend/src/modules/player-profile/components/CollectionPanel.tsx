@@ -6,7 +6,7 @@ import {
   getItems,
   getStableKey,
 } from "../lib/playerProfile.utils";
-import type { FaceitProfileSection } from "../../../types/faceit.interface";
+import type { FaceitProfileSection } from "../../../types/faceit";
 
 interface CollectionPanelProps {
   title: string;

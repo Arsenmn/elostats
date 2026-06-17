@@ -2,7 +2,7 @@ import { ShieldAlert } from "lucide-react";
 import Panel from "./Panel";
 import Unavailable from "./Unavailable";
 import { getItems } from "../lib/playerProfile.utils";
-import type { FaceitProfileSection } from "../../../types/faceit.interface";
+import type { FaceitProfileSection } from "../../../types/faceit";
 
 interface SectionStatusPanelProps {
   title: string;

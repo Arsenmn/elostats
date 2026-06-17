@@ -1,22 +1,22 @@
-import { BackgroundPlus } from "@/components/ui/background-plus";
-import VectorPad from "@/components/ui/vector-pad";
+import BackgroundPlus from "../ui/background-plus";
+import VectorPad from "../ui/vector-pad";
 
 const VectorPadSection = () => {
   return (
-    <section className="relative isolate min-h-screen overflow-hidden bg-[#05070d]">
+    <section className="relative isolate min-h-[92svh] overflow-hidden border-b border-[#1d2638] bg-[#05070d]">
       <BackgroundPlus
         plusColor="#dfff22"
         plusSize={42}
         fade={false}
-        className="opacity-[0.24]"
+        className="opacity-[0.16]"
       />
       <BackgroundPlus
         plusColor="#22f5ff"
         plusSize={84}
         fade={false}
-        className="opacity-[0.12]"
+        className="opacity-[0.1]"
       />
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(244,247,255,0.055)_1px,transparent_1px),linear-gradient(90deg,rgba(244,247,255,0.055)_1px,transparent_1px)] bg-[size:80px_80px]" />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(244,247,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(244,247,255,0.04)_1px,transparent_1px)] bg-[size:80px_80px]" />
       <div className="pointer-events-none absolute bottom-[-0.2em] left-1/2 -z-0 -translate-x-1/2 whitespace-nowrap text-[18vw] font-black uppercase leading-none tracking-normal text-white/[0.035]">
         VECTOR
       </div>

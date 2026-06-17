@@ -6,18 +6,18 @@ import {
   Route,
   RouterProvider,
 } from "react-router";
-import HomePage from "../pages/HomePage";
 import NotFoundPage from "../shared/ui/NotFoundPage";
-import LoginPage from "../pages/LoginPage";
-import RegisterPage from "../pages/RegisterPage";
-import OAuthCallbackPage from "../pages/OAuthCallbackPage";
-import PlayerProfilePage from "../pages/PlayerProfilePage";
-import PlayersPage from "../pages/PlayersPage";
-import AnalysisPage from "../pages/AnalysisPage";
-import ComparePage from "../pages/ComparePage";
+import LoginPage from "../modules/auth/pages/LoginPage";
+import RegisterPage from "../modules/auth/pages/RegisterPage";
+import OAuthCallbackPage from "../modules/auth/pages/OAuthCallbackPage";
 import PublicRoutes from "./PublicRoutes";
-import { useAuth } from "../hooks/useAuth.hook";
-import Header from "../components/header/Header";
+import { AppShell } from "@/shared/layout/AppShell";
+import { useAuth } from "@/providers/auth/useAuth.hook";
+import PlayersPage from "@/modules/players/pages/PlayersPage";
+import PlayerProfilePage from "@/modules/player-profile/pages/PlayerProfilePage";
+import AnalysisPage from "@/modules/ai-analysis/pages/AnalysisPage";
+import ComparePage from "@/modules/player-compare/pages/ComparePage";
+import HomePage from "@/modules/home/pages/HomePage";
 
 const ProtectedRoutes = () => {
   const { accessToken } = useAuth();
@@ -25,10 +25,9 @@ const ProtectedRoutes = () => {
   if (!accessToken) return <Navigate to="/login" replace />;
 
   return (
-    <>
-      <Header />
+    <AppShell>
       <Outlet />
-    </>
+    </AppShell>
   );
 };
 

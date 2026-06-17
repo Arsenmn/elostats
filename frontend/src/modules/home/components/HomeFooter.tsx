@@ -17,11 +17,11 @@ const HomeFooter = () => {
   };
 
   return (
-    <footer className="relative isolate overflow-hidden border-t border-[#dfff22] bg-black pb-20 text-[#f4f7ff] sm:pb-24">
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(rgba(223,255,34,0.055)_1px,transparent_1px),linear-gradient(90deg,rgba(244,247,255,0.055)_1px,transparent_1px)] bg-[size:56px_56px]" />
+    <footer className="relative isolate overflow-hidden border-t border-[#29324a] bg-[#05070d] pb-20 text-[#f4f7ff] sm:pb-24">
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(rgba(223,255,34,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(244,247,255,0.04)_1px,transparent_1px)] bg-[size:56px_56px]" />
 
-      <div className="relative z-10 mx-auto grid max-w-7xl border-x border-[#f4f7ff]/70 md:grid-cols-[minmax(230px,0.9fr)_minmax(280px,1.1fr)_minmax(180px,0.7fr)_minmax(260px,0.95fr)]">
-        <section className="relative flex min-h-72 flex-col justify-end overflow-hidden border-b border-[#f4f7ff]/70 p-5 md:border-b-0 md:border-r md:p-7">
+      <div className="relative z-10 mx-auto grid max-w-7xl border-x border-[#29324a] bg-[#05070d]/88 md:grid-cols-[minmax(230px,0.9fr)_minmax(280px,1.1fr)_minmax(180px,0.7fr)_minmax(260px,0.95fr)]">
+        <section className="relative flex min-h-72 flex-col justify-end overflow-hidden border-b border-[#29324a] p-5 md:border-b-0 md:border-r md:p-7">
           <div className="absolute left-[-0.08em] top-1/2 -translate-y-1/2 text-[4.2rem] font-black uppercase leading-none tracking-normal text-white md:text-[5.6rem]">
             Elo
             <br />
@@ -34,7 +34,7 @@ const HomeFooter = () => {
           </div>
         </section>
 
-        <section className="border-b border-[#f4f7ff]/70 md:border-b-0 md:border-r">
+        <section className="border-b border-[#29324a] md:border-b-0 md:border-r">
           <div className="grid grid-cols-[96px_1fr] border-b border-[#dfff22] font-mono text-xs font-black uppercase tracking-[0.16em] text-[#dfff22]">
             <div className="border-r border-[#dfff22] px-4 py-4">(10)</div>
             <div className="px-5 py-4">Social media</div>
@@ -54,17 +54,17 @@ const HomeFooter = () => {
           </nav>
         </section>
 
-        <section className="relative min-h-48 overflow-hidden border-b border-[#f4f7ff]/70 md:border-b-0 md:border-r">
+        <section className="relative min-h-48 overflow-hidden border-b border-[#29324a] md:border-b-0 md:border-r">
           <div className="absolute inset-y-0 left-1/2 w-28 -translate-x-1/2 bg-[repeating-linear-gradient(135deg,#dfff22_0_22px,#000_22px_44px)]" />
-          <div className="absolute inset-x-0 bottom-0 border-t border-[#f4f7ff]/70 bg-black/82 px-4 py-4 font-mono text-[10px] uppercase leading-5 tracking-[0.14em] text-[#8a94aa]">
+          <div className="absolute inset-x-0 bottom-0 border-t border-[#29324a] bg-[#05070d]/88 px-4 py-4 font-mono text-[10px] uppercase leading-5 tracking-[0.14em] text-[#8a94aa]">
             <span className="text-[#dfff22]">Live node</span>
             <br />
             Match form parser ready
           </div>
         </section>
 
-        <section className="border-b border-[#f4f7ff]/70 p-5 md:border-b-0 md:p-7">
-          <nav className="border border-[#f4f7ff]/70 bg-black/70 px-5 py-5">
+        <section className="border-b border-[#29324a] p-5 md:border-b-0 md:p-7">
+          <nav className="border border-[#29324a] bg-[#070a12]/80 px-5 py-5">
             <div className="space-y-3">
               {utilityLinks.map((item) => (
                 <a
@@ -80,7 +80,7 @@ const HomeFooter = () => {
           </nav>
         </section>
 
-        <section className="border-b border-[#f4f7ff]/70 p-5 md:col-span-2 md:border-r md:p-6">
+        <section className="border-b border-[#29324a] p-5 md:col-span-2 md:border-r md:p-6">
           <div className="flex flex-col gap-4 md:flex-row md:items-center">
             <div className="flex h-20 w-36 items-center justify-center border-2 border-[#f4f7ff] bg-white font-black uppercase leading-none text-black">
               CS2
@@ -95,7 +95,7 @@ const HomeFooter = () => {
           </div>
         </section>
 
-        <section className="border-b border-[#f4f7ff]/70 p-5 md:border-r md:p-6">
+        <section className="border-b border-[#29324a] p-5 md:border-r md:p-6">
           <div className="font-mono text-xs uppercase leading-5 tracking-[0.1em] text-[#aab7cf]">
             Provider stack
             <br />

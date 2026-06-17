@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from "react-router";
-import Header from "../components/header/Header";
-import { useAuth } from "../hooks/useAuth.hook";
+import { useAuth } from "@/providers/auth/useAuth.hook";
+import { AppShell } from "@/shared/layout/AppShell";
 
 const ProtectedRoutes = () => {
   const { accessToken } = useAuth();
@@ -10,12 +10,11 @@ const ProtectedRoutes = () => {
   }
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
-      <Header />
-      <div className="flex-1 min-h-0 flex flex-col">
+    <AppShell>
+      <div className="flex min-h-0 flex-1 flex-col">
         <Outlet />
       </div>
-    </div>
+    </AppShell>
   );
 };
 

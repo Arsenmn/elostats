@@ -1,5 +1,5 @@
 import { jwtDecode } from "jwt-decode";
-import type { AuthResponse } from "../types/auth.interface";
+import type { AuthResponse } from "../modules/auth/types/auth.interface";
 
 const ACCESS_TOKEN_KEY = "accessToken";
 const REFRESH_TOKEN_KEY = "refreshToken";
